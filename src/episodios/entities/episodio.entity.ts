@@ -7,10 +7,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Index,
 } from 'typeorm';
 import { Serie } from '../../series/entities/series.entity';
 
 @Entity()
+@Index(['serieId', 'numeroCapitulo'], { unique: true }) 
+@Index(['serieId', 'titulo'], { unique: true }) 
 export class Episodio {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,17 +21,20 @@ export class Episodio {
   @Column()
   titulo: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int' }) // Duración en minutos (ejemplo: 60 = 1 hora, 25 = 25 minutos)
   duracion: number;
 
   @Column({ type: 'int' })
   numeroCapitulo: number;
 
-  @ManyToOne(() => Serie, (serie) => serie.episodios, { nullable: false })
+  @ManyToOne(() => Serie, (serie) => serie.episodios, { 
+    nullable: false,
+    onDelete: 'CASCADE' 
+  })
   @JoinColumn({ name: 'serieId' })
   serie: Serie;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: false })
   serieId: number;
 
   @CreateDateColumn()

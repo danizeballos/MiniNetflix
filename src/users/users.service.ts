@@ -11,13 +11,15 @@ export class UsersService {
   ) {}
 
   findAll() {
-    return this.userRepo.find(); // no devuelve password por select:false
+    return this.userRepo.find({
+      select: ['id', 'nombre', 'email', 'password'], 
+    });
   }
 
   async findOneByEmail(email: string) {
     return this.userRepo.findOne({
       where: { email },
-      select: ['id', 'nombre', 'email', 'password'], // aquí sí pedimos password para login
+      select: ['id', 'nombre', 'email', 'password'], 
     });
   }
 

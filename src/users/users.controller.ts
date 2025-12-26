@@ -6,7 +6,6 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // protegido: solo para verificar que JWT funciona
   @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll() {

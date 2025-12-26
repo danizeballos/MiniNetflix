@@ -14,7 +14,7 @@ import { jwtConstants } from './constants/jwt.constant'; // 👈 IMPORTANTE
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       global: true,
-      secret: jwtConstants.secret, // 👈 AQUÍ
+      secret: jwtConstants.secret, 
       signOptions: { expiresIn: '120s' },
     }),
   ],
