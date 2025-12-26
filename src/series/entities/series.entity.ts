@@ -1,11 +1,11 @@
 import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Episodio } from '../../episodios/entities/episodio.entity';
 
@@ -26,7 +26,7 @@ export class Serie {
   @Column()
   urlPortada: string;
 
-  @OneToMany(() => Episodio, (episodio) => episodio.serie, { cascade: true })
+  @OneToMany(() => Episodio, (episodio) => episodio.serie)
   episodios: Episodio[];
 
   @CreateDateColumn()

@@ -1,19 +1,23 @@
-import { IsInt, IsPositive, IsString, MinLength } from 'class-validator';
+import { IsInt, IsString, MinLength, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateEpisodioDto {
-  @IsString({ message: 'El titulo debe ser texto' })
-  @MinLength(2, { message: 'El titulo debe tener al menos 2 caracteres' })
+  @IsString()
+  @MinLength(2)
   titulo: string;
 
-  @IsInt({ message: 'duracion debe ser un entero' })
-  @IsPositive({ message: 'duracion debe ser positiva' })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
   duracion: number;
 
-  @IsInt({ message: 'numeroCapitulo debe ser un entero' })
-  @IsPositive({ message: 'numeroCapitulo debe ser positivo' })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
   numeroCapitulo: number;
 
-  @IsInt({ message: 'serieId debe ser un numero' })
-  @IsPositive({ message: 'serieId debe ser positivo' })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
   serieId: number;
 }

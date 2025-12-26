@@ -1,11 +1,12 @@
 import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Serie } from '../../series/entities/series.entity';
 
@@ -18,13 +19,17 @@ export class Episodio {
   titulo: string;
 
   @Column({ type: 'int' })
-  duracion: number; // minutos
+  duracion: number;
 
   @Column({ type: 'int' })
   numeroCapitulo: number;
 
-  @ManyToOne(() => Serie, (serie) => serie.episodios, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Serie, (serie) => serie.episodios, { nullable: false })
+  @JoinColumn({ name: 'serieId' })
   serie: Serie;
+
+  @Column({ type: 'int' })
+  serieId: number;
 
   @CreateDateColumn()
   createdAt: Date;

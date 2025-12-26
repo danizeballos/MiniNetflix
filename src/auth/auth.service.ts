@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
+import { RegisterDto } from './dto/register.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly userService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async register(registerDto: RegisterDto) {
+    const { nombre, email, password } = registerDto;
+
+    const user = await this.userService.findOneByEmail(email);
+
+    if (user) {
+      throw new BadRequestException('Email ya registrado, intenta con otro');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await this.userService.create({
+      nombre,
+      email,
+      password: hashedPassword,
+    });
+
+    return { message: 'Usuario registrado exitosamente' };
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async login(email: string, password: string) {
+    const user = await this.userService.findOneByEmail(email);
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!user) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    const payload = { sub: user.id,  nombre: user.nombre, email: user.email};
+
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        email: user.email,
+      },
+    };
   }
 }

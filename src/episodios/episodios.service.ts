@@ -21,8 +21,8 @@ export class EpisodiosService {
 
     const episodio = this.epiRepo.create({
       titulo: dto.titulo,
-      duracion: dto.duracion,
-      numeroCapitulo: dto.numeroCapitulo,
+      duracion: Number(dto.duracion),
+      numeroCapitulo: Number(dto.numeroCapitulo),
       serie,
     });
 
